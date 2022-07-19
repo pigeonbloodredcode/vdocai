@@ -1,0 +1,15 @@
+.Edit {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  .DraftEditor-editorContainer > .public-DraftEditor-content {
+    background-color: white;
+  }
+  
+  .DraftEditor-editorContainer
+    > .public-DraftEditor-content[contenteditable="true"] {
+    background-color: red;
+    border: 1px solid blue;
+  }
+  
