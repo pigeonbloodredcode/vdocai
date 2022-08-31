@@ -33,7 +33,7 @@ type Admin struct {
 
 type Lesson struct {
 	LessonID uint   `gorm:"primaryKey"`
-	Header   string `json:"header`
+	Header   string `json:"header"`
 	Content  string `json:"content"`
 	Status   bool   `json:"status"`
 
