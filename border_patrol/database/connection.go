@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	dns := "root:R00t@localhost@/border_patrol"
+	dns := "root:xxx@localhost@/border_patrol"
 	connection, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
 
 	if err != nil {
