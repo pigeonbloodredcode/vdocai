@@ -1,7 +1,8 @@
 import * as React from 'react';//import logo from './logo.svg';
 import './App.css';
-import {   BrowserRouter as Router,  Routes, /* instead of "Switch"*/  Route,          BrowserRouter } from 'react-router-dom';
+import {   BrowserRouter as Router,  Routes,  Route,          BrowserRouter } from 'react-router-dom';
 import { useEffect, useState }  from 'react';
+
 
 import Nav      from './components/Nav';
 
@@ -18,123 +19,142 @@ import LockEmployee             from './pages/LockEmployee';
 
 import CreateLesson             from './pages/CreateLesson';
 import Lessons                  from './pages/Lessons';
+import ReadViewLessons          from './pages/ReadViewLessons'
 import EditLesson               from './pages/EditLesson';
+import UpdateLesson             from './pages/UpdateLesson';
 import DeleteLesson             from './pages/DeleteLesson';
 import ViewLesson               from './pages/ViewLesson';
 import ViewLessons              from './pages/ViewLessons';
 
 import Edit              from './pages/Edit';
+import AddLesson from './pages/AddLesson';
+
+
 
 
 
 // declare var urlBackEnd:string ;
 // urlBackEnd              = "http://localhost:8080"
-function App() {  
+function App()  {  
   //const [email, setEmail] = useState("");    
-  
-  const [name, setName]         = useState("");
+  let [myVarible] = useState('save to reload');
+  const [name, setName]         = useState("");  
+  const [isLogin, setIsLogin]   = useState(false);
+
   var   [isAdmin, setIsAdmin]   = useState(false);
-  var   [isLogin, setIsLogin]   = useState(false);
-  
- useEffect( ()=>{
-        (
-            async ()=>{
-              const resaponse = await fetch("http://localhost:8080/api/synemployee", {
-              //  const resaponse = await fetch(urlBackEnd+"/api/synemployee", {
-                 method:'GET',            
-                 headers:{'Content-Type': 'application/json'},
-                 credentials:'include',
-                });
-                const content = await resaponse.json()                                
-
-                setName(content.name);
-                if(content.access_poin == "all"){
-                  console.log("useEffectAdmin content ", content)
-                  setIsAdmin(true)
-                }else if(content.access_poin=="general"){
-                  console.log("useEffectGeneral content ", content)
-                  setIsAdmin(false)
-                }
-
-                if(content.name !== "") setIsLogin(true)
-                if(content.name === "  ") setIsLogin(false)
-                if(content.name === undefined ) setIsLogin(false) ///     if (content.message === "unauthenticated") isLogin = false;                        
-                
-            }                    
-        )();
-      },);
-  
-
-    
-      
+  var   [isUser, setIsUser]     = useState(false);
    
-  
 
+  useEffect(
+    ()=>{
+          (
+              async ()=>{
+                const resaponse = await fetch("http://localhost:8080/api/synemployee", {              //  const resaponse = await fetch(urlBackEnd+"/api/synemployee", {
+                  method:'GET',            
+                  headers:{'Content-Type': 'application/json'},
+                  credentials:'include',
+                  });
+                  const content = await resaponse.json()                              
+                  setName(content.name);
 
+                  console.log("content.access_poin=", content.access_poin);
+                  if(content.access_poin == "all"){
+                    console.log("useEffectAdmin content ", content);
+                    setIsAdmin(true);
+                    setIsUser(false);
+                  
+                  }else if(content.access_poin=="viewer"){//viewer
+                    console.log("useEffectGeneral content ", content);                    
+                    setIsAdmin(false);
+                    setIsUser(true);
+                  }
 
-if(isAdmin){
- return (              
-      
-      <div className="App">                    
-      <BrowserRouter>
-
-      <Nav name={name} setName={setName}  isAdmin={isAdmin} setIsAdmin={setIsAdmin} isLogin={isLogin} setIsLogin={setIsLogin} />
-      <main className="form">     
-           <Routes>            
-              <Route path="/"                           element = {<Home name={name} />} /> exact
-            
-              if(isLogin == false) <Route path="/login"      element = {<Login setName={setName} />} /> 
-            
-              <Route path="/register"                   element = {<Register/>} /> 
-              <Route path="/employees"                  element = {<Employees/> }  /> 
-
-              <Route path="/edit-employee/:id"          element = {<EditEmployee/> }  /> 
-              <Route path="/delete-employee/:id"        element = {<DeleteEmployee/> }  /> 
-              <Route path="/admin-employee/:id/:set"    element = {<AdminEmployee/> }  /> 
-              <Route path="/lock-employee/:id/:set"     element = {<LockEmployee/> }  /> 
-              
-              <Route path="/view-lessons/:id"           element = {<ViewLessons/> }  /> 
-              <Route path="/lessons"                    element = {<Lessons/> }  /> 
-              <Route path="/create-lesson"              element = {<CreateLesson/> }  /> 
-              <Route path="/edit-lesson/:id"                element = {<EditLesson/> }  /> 
-              <Route path="/delete-lesson/:id"          element = {<DeleteLesson/> }  /> 
-              <Route path="/view-lesson/:id"            element = {<ViewLesson/> }  /> 
-              
-              <Route path="/edit/"            element = {<Edit /> }  /> 
-              
-            </Routes>    
-  
-        </main> 
-
-      </BrowserRouter>
-      </div>
-    
-  );
-}else{
- return (              
-      <div className="App">              
-      <BrowserRouter>
+                  if(content.name !== "") setIsLogin(true);
+                  if(content.name === "  ") setIsLogin(false);
+                  if(content.name === undefined ) setIsLogin(false); ///     if (content.message === "unauthenticated") isLogin = false;                        
+              }                    
+          )();
+    },);
+  // isAdmin //isUser  //else is notAccount
+  if(isAdmin){
+    return (                      
+        <div className="App">                    
+        <BrowserRouter>
         <Nav name={name} setName={setName}  isAdmin={isAdmin} setIsAdmin={setIsAdmin} isLogin={isLogin} setIsLogin={setIsLogin} />
         <main className="form">     
             <Routes>            
-                <Route path="/"                           element = {<Home name={name} />} /> exact            
-                <Route path="/login"                      element = {<Login setName={setName} />} />
+                <Route path="/"                           element = {<Home name={name} />} /> exact
+              
+                if(isLogin == false) <Route path="/login"      element = {<Login setName={setName}/>} /> 
+              
+                <Route path="/register"                   element = {<Register/>} /> 
+                <Route path="/employees"                  element = {<Employees/> }  /> 
 
-                <Route path="/register"                   element = {<Register/>} />               
+                <Route path="/edit-employee/:id"          element = {<EditEmployee/> }  /> 
+                <Route path="/delete-employee/:id"        element = {<DeleteEmployee/> }  /> 
+                <Route path="/admin-employee/:id/:set"    element = {<AdminEmployee/> }  /> 
+                <Route path="/lock-employee/:id/:set"     element = {<LockEmployee/> }  /> 
+                
+                <Route path="/view-lessons/:id"           element = {<ViewLessons/> }  /> 
+                
+                <Route path="/lessons"                    element = {<Lessons/> }  /> 
+                <Route path="/create-lesson"              element = {<CreateLesson/> }  /> 
+                <Route path="/add-lesson"                 element = {<AddLesson/> }  /> 
+                <Route path="/edit-lesson/:id"            element = {<EditLesson/> }  /> 
+                <Route path="/update-lesson"              element = {<UpdateLesson/> }  />                               
+                <Route path="/delete-lesson/:id"          element = {<DeleteLesson/> }  /> 
+                <Route path="/view-lesson/:id"            element = {<ViewLesson/> }  /> 
+                
+                <Route path="/edit/"                      element = {<Edit /> }  /> 
               </Routes>        
-        </main> 
-      </BrowserRouter>
-      </div>    
- );
+          </main> 
+        </BrowserRouter>
+        </div>      
+    );
+  }
+  else if(isUser){
+    return (      
+      <div className="App">                    
+        <BrowserRouter>
+        <Nav name={name} setName={setName}  isAdmin={isAdmin} setIsAdmin={setIsAdmin} isLogin={isLogin} setIsLogin={setIsLogin} />
+        <main className="form">     
+            <Routes>            
+                <Route path="/"                           element = {<Home name={name} />} /> exact
+                <Route path="/ReadViewLessons"            element = {<ReadViewLessons/> }  />                                 
+                <Route path="/view-lessons/:id"           element = {<ViewLessons/> }  /> 
+                <Route path="/login"                      element = {<Login setName={setName} />} />
+                
+                <Route path="/edit/"                      element = {<Edit /> }  />                                                 
+              </Routes>        
+          </main> 
+        </BrowserRouter>
+      </div>      
+    );   
+  }
+  else{
+    return (              
+          <div className="App">              
+          <BrowserRouter>ยังไม่ได้ล็อคอิน
+            <Nav name={name} setName={setName}  isAdmin={isAdmin} setIsAdmin={setIsAdmin} isLogin={isLogin} setIsLogin={setIsLogin} />
+            <main className="form">     
+                <Routes>            
+                    <Route path="/"                           element = {<Home name={name} />} /> exact            
+                    <Route path="/login"                      element = {<Login setName={setName} />} />
 
-}
+                    <Route path="/register"                   element = {<Register/>} />               
+                  </Routes>        
+            </main>           
+          </BrowserRouter>
+          </div>            
+    );
+
+  }
 
 
 }
 
 export default App;
  
-
 
 
 
