@@ -1,6 +1,7 @@
 import {  useState } from 'react';
 import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 var SaveFinish = false;
    
@@ -10,6 +11,7 @@ function EditEmployee(){
     var [emailGet, setGetEmail]           = useState(String);
     var [cityGet, setGetCity]             = useState(String);
     var [passwordGet, setGetPassword]     = useState(String);
+    var [isSave, setIsSave]               = useState(false);
 
     
     var { id } = useParams();
@@ -43,7 +45,7 @@ function EditEmployee(){
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
         event.preventDefault();
-        const navigate = useNavigate();
+        //const navigate = useNavigate();
         
         const nameField = event.currentTarget[0]; //First Name Last Name
         assertIsFormFieldElement(nameField);
@@ -73,16 +75,22 @@ function EditEmployee(){
                     "password":passwordField.value
                     }
                 )                    
-        }).then(responce =>{            
-            
-            if(!responce.ok){                
-                //throw new Error(response.statusText)
-            }else{
-            }
-            console.log("res", responce)
-        })
-                        
+        }).then(responce =>{                 
+            //throw new Error(response.statusText)                console.log("res", "responce not ok")       
+            if(!responce.ok)    {setIsSave(false);}
+            else                {setIsSave(true);}            
+        })                        
     };
+    console.log("isSave =", isSave)
+    if(isSave){
+        return <>
+        <Alert variant="success">
+            <Alert.Heading>บันทึก</Alert.Heading>
+                <p>ดำเนินการอัพเดจข้อมูลผู้ใช้งาน</p>
+        </Alert>            
+        {  <meta http-equiv="refresh" content="3;url=/employees" /> }
+        </>;
+    }
   
     return (        
 
@@ -123,9 +131,7 @@ export default EditEmployee;
 
 
 
-function useNavigate() {
-    throw new Error('Function not implemented.');
-}
+//function useNavigate() {    throw new Error('Function not implemented.');}
 // //import { render } from '@testing-library/react';
 // import { SyntheticEvent, useState } from 'react';
 // import React from 'react';

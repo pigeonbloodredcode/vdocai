@@ -18,14 +18,13 @@ function DeleteLesson(){
     
 
     return (        
-
         <div id="editEmp" className="container">             
             {getData == "deletelesson"?"ลบข้อมูลบทเรียนแล้ว":"ข้อมูลบทเรียนมีปัญหาทางการลบ" }
             {  <meta http-equiv="refresh" content="0;url=/lessons" /> }
             {/* <Navigate to="/lessons" replace={true} />*/}
-        </div>
-        
+        </div>        
     );
+    
 }
 export default DeleteLesson;
 

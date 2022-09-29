@@ -28,7 +28,6 @@ function ViewLesson()    {
             }).then( (response)  =>  response.json())
             .then((data)=>{
                setViewLesson(data)
-
                
                setId(data.lesson_id) 
                setHeader(data.header) 
@@ -76,13 +75,8 @@ function ViewLesson()    {
                         </>
                         <br></br>
                         </div>
-                    </div>
-                    
-                    
-                    
-                    
+                    </div>      
                 </div>
-            
         </>
     );
 }

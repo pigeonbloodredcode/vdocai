@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-bootstrap';
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
 
 
@@ -12,14 +13,21 @@ function LockEmployee()    {
         headers:{'Content-Type': 'application/json'},
         credentials:'include',
     })  
-    console.log("lock emp", url) 
+    console.log("lock emp", responce) 
     
-    return (        
-        <div id="adminEmp" className="container">
-              <Navigate to="/employees" replace={true} />
-        </div>        
-        
-    );
+    
+    return <>
+        <Alert variant="success">
+            <Alert.Heading>บันทึก</Alert.Heading>
+                <p>ดำเนินการอัพเดจข้อมูลผู้ใช้งาน</p>                
+        </Alert>            
+        {  <meta http-equiv="refresh" content="3;url=/employees" /> }
+        </>;
+    // return (        
+    //     <div id="adminEmp" className="container">
+    //           <Navigate to="/employees" replace={true} />
+    //     </div>                
+    // );
 }
 export default LockEmployee;
 

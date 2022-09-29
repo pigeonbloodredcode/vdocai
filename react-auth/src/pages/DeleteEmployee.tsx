@@ -13,8 +13,13 @@ function EditEmployee() {
     })
     .then( (response)  =>  response.json())
     .then((data)=>{
-        setData(data);console.log(data.message);console.log("getdata",getData);
-        if( getData == "deleteemployee") dataSuccess; else if( data["message"] == "deleteemployee") dataSuccess;       
+        setData(data);
+        console.log(data.message);
+        console.log("getdata",getData);
+        if( getData == "deleteemployee") 
+            dataSuccess; 
+        else if( data["message"] == "deleteemployee") 
+            dataSuccess;       
         
     });  
 
@@ -25,14 +30,14 @@ function EditEmployee() {
     <Navigate to="/employees" replace={true}  />
     }, 1000);    
   }    
-  
-    
+      
 ///popup  alert    
     return (     
         <div id="editEmp" className="container">       
             {getData == "deleteemployee"?"ข้อมูลพนักงานบันทึกแล้ว":"พบปัญหาการลบข้อมูลพนักงาน" }            
             {  <meta http-equiv="refresh" content="8;url=/employees" /> } 
         </div>
+        
 
         
     );

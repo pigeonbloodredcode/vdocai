@@ -1,6 +1,7 @@
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 
 
@@ -32,16 +33,25 @@ function Register  ()    {
         });
         const content = await (await response).json();       
        //can add employee susscess  to do set redirect to login page
-       if(content.Id != 0){
+       console.log("content.EmployeeID", content.EmployeeID);
+       if(content.EmployeeID != 0){
             setRedirect(true);
        }
        console.log("setRedirect(ON)", content, content.name);
        
     };
-     
-
+    
     if (goPage ){        
-        return <Navigate  to="/login"/>;        
+        return <>
+        <Alert variant="success">
+            <Alert.Heading>ขอบคุณครับ</Alert.Heading>
+                <p>ระบบสร้างผู้ใช้งาให้แล้วครับ</p>
+                <hr />
+                <p className="mb-0">สามารถ <a href="http://localhost:3000/login">คลิกแล้ว</a> Login ใช้งานได้เลยครับ</p>
+        </Alert>       
+        </>;
+        //<Navigate  to="/login"/>
+        
     }
     
     return (        
@@ -60,10 +70,11 @@ function Register  ()    {
                 <input type="password" className="form-control"  placeholder="Password" required  //value="RichTUM2"
                     onChange={e => setPassword(e.target.value)}
                 /><br/>
-                <button className="w-100 btn btn-lg btn-outline-dark" type="submit">บันทึก</button>
-                    
-            </form>
+                <button className="w-100 btn btn-lg btn-outline-dark" type="submit">บันทึก</button>                    
+            </form>            
         </div>
+        
+        
     );
 }
 export default Register;

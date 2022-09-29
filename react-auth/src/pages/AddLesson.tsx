@@ -1,112 +1,19 @@
 import React, { useContext, useEffect, useState,useRef } from "react";
-import { SyntheticEvent } from "react-draft-wysiwyg";
+import { Alert } from "react-bootstrap";
 
-import { validateFileSize,  validateFileType } from "../service/fileValidatorServices";
-import FileService from "../service/fileService";
-import { Editor } from "@tinymce/tinymce-react";
-
-
-
-// import fs from 'fs';
-// import FormData from 'form-data';
-import axios from 'axios';import cors from 'cors';
-import DocumentFileSizeValidator from "../validators/DocumentFileSizeValidator";
-
-function CreateVdoLesson() {
-  
-  const [uploadFormError, setUploadFormError] = useState<string>('')
-  const [getValue, setValue] = useState<string>('')
-  const handleLessonCreate =  async (element: HTMLInputElement) => {    //console.log(element)
-    const file = element.files       
-    if (file === null ){
-      return 
-    }else{
-      console.log("file != null: ", file)      
-    }
-
-    const validFileSize = await validateFileSize(file[0].size)
-    const validFileType = await validateFileType(FileService.getFileExtension(file[0].name))
-    if (!validFileSize.isValid){
-      setUploadFormError(validFileSize.errorMessage)
-    }
-    if(!validFileType.isValid){
-      setUploadFormError(validFileType.errorMessage)  
-    }
-    if(uploadFormError && validFileSize.isValid){
-      setUploadFormError('')
-    }
-    // const fileService = new FileService(file[0])
-    // fileService.uploadFile()    
-  }    
-
-  const handleEditorChange = (content: any, editor: any) => {
-    console.log("Content was updated:", content);
-  };
-  console.log("handleEditorChange was updated:",  handleEditorChange);
-  
-
-  return  (
-    <div className="container">  
-    <form action="http://localhost:8080/api/create-lesson"
-      encType="multipart/form-data"
-      method="POST"
-    > 
-      <h6>สร้างบทเนื้อหาบทเรียน</h6>
-
-      <div className="mb-3">
-        <label htmlFor="header" className="form-label">ชื่อเรื่อง</label>
-        <input   type="input"  className="form-control" id="header" name="header" placeholder=""/>
-      </div>
-      <div className="mb-3">
-        <label htmlFor="quiz" className="form-label">embed google</label>
-        <input type="input"  className="form-control" id="embedG" name="embedG"  placeholder=""/>
-        {/*<input   type="input"  className="form-control" id="embedG" name="embedG" placeholder="1FAIpQLSezra08VMfz8VzFhfsVdZKSH5i2E6cV9fD4VdV95jCWE5aV2A" value="1FAIpQLSezra08VMfz8VzFhfsVdZKSH5i2E6cV9fD4VdV95jCWE5aV2A"/>*/}
-      </div>
-      <div className="mb-3">          
-        <label htmlFor="content" className="form-label">เนื้อหา</label>
-        {/* <textarea  className="form-control" id="content" name="content" ></textarea> */}        
-        <input type="hidden" id="setContent" name="setContent" value={getValue}/>   
-        <Editor id="content" 
-        apiKey='qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc' initialValue=""
-        init={{
-          skin: "snow",icons: "thin",
-          height: 500,
-          menubar: false,
-          plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview','anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen','insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'],
-          toolbar:"undo redo | styleselect | fontsizeselect| code | bold italic forecolor | alignleft aligncenter alignright alignjustify | outdent indent ",            
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-          //toolbar:"undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent "       //toolbar: 'undo redo | blocks | '+'bold italic forecolor | alignleft aligncenter ' +'alignright alignjustify | bullist numlist outdent indent | ' +'removeformat | help',// onInit={(evt, editor) => editorRef.current = editor}
-        }}
-          value={getValue}
-          onInit={(evt, editor) => {  handleEditorChange  }}
-          onEditorChange={ (content: any, editor: any)=>{
-              const set_Content = document.getElementById('setContent') as HTMLDivElement | null;              
-              setValue(content);
-              console.log(content);//alert(set_Content.set)
-              
-            }
-          }
-        />      
-      </div> 
-      
-      <input name ="formData"  multiple={false}    type="file"         
-        onChange={(e: SyntheticEvent) => handleLessonCreate(e.currentTarget as HTMLInputElement)}
-      />
-      {
-          uploadFormError  &&
-          <div>{uploadFormError}</div>
-      }<br/><br/>
-      <button className="w-100 btn btn-lg btn-dark"  type="submit">บันทึก</button> <br/><br/>
-      
-     </form>
-     
-     
-     </div>
-   )
+function AddVdoLesson() {
+  console.log("UpdateVdoLesson") ;
+  return <>
+   <Alert variant="success">
+       <Alert.Heading>บันทึก</Alert.Heading>
+           <p>ดำเนินการเพิ่มข้อมูลบทเรียน</p>                
+   </Alert>            
+   {  <meta http-equiv="refresh" content="3;url=/lesson" /> }
+  </>;
   
 }
 
-export default CreateVdoLesson;
+export default AddVdoLesson;
 
 
 

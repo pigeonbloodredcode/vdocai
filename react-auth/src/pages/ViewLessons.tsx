@@ -19,7 +19,6 @@ import { Editor } from "@tinymce/tinymce-react";
 const ViewLessons =  ()=>{
     //const [getId, setMyId]: [URLSearchParams, Function] = useSearchParams();
     var { id }= useParams();
-    
     //const  [lessonvdoList, setLessonVdoList] = useState<string[]>([]);
     const [lessonvdoList, setLessonVdoList] = useState<any[]>([])    
     //const [lessonvdoList, setLessonVdoList] = useState([]);
@@ -50,19 +49,18 @@ const ViewLessons =  ()=>{
     },[]);
 
     
-    console.log("Count Lessonvdo length", lessonvdoList.length)
-    console.log("Datas Lessonvdo ", lessonvdoList)
-    console.log("Datas Datas", lessonvdoList[0])
+    console.log("Count Lessonvdo length", lessonvdoList.length);
+    console.log("Datas Lessonvdo ", lessonvdoList);
+    console.log("Datas Datas", lessonvdoList[0]);
     const setStarPoint =(e: any)=>{
-            console.log("Even", e)
-
+            console.log("Even", e);
     }
 
 
 return(                
         <div 
          className="container "                 
-         style={{marginBlockStart:0,marginLeft:80}}>
+         style={{marginBlockStart:0,marginLeft:80, }}>
                 { 
                         lessonvdoList.length > 0 ?(                                
                             lessonvdoList.map((item, index) => {
@@ -84,17 +82,18 @@ return(
                                         embedG = "https://docs.google.com/forms/d/e/"+item.embed_google+"/viewform?embedded=true"
                                         linkVdo = "http://localhost:3000/uploads/" + item.lesson_id + ".mp4"                                        
                                     return( 
+
                                         <div className="row col-sm-12">
                                             <div className="row col-sm-8" >
                                             <div className="col-sm-8 rounded-top" style={{backgroundColor:"#3B3B3B",color:"whitesmoke"}}>&nbsp;{item.header}</div>                                             
                                             <div className="border border-dark" style={{ height:777}} >
                                                         <div className="rows " style={{paddingTop:22,paddingLeft:20, color: "black", width:789}} > 
-                                                            <div className="col-md" style={{backgroundColor:"gray", border: "1px solid black" , width:'77', height:"444"}}>
-                                                                <JoLPlayer
-                                                                        option={{                                    
-                                                                        videoSrc:linkVdo,
-                                                                        width: 765,
-                                                                        height: 444,
+                                                            <div id="video-container" className="col-md" style={{backgroundColor:"gray", border: "1px solid black" , width:'77', height:"444"}}>
+                                                                <JoLPlayer                                                                                    
+                                                                        option={{                                                                                                                
+                                                                            videoSrc:linkVdo,
+                                                                            width: 765,
+                                                                            height: 444,
                                                                         }}
                                                                     />  
                                                             </div>
@@ -102,18 +101,19 @@ return(
                                                             {/* <div className="col-md " style={{color: "gray",fontSize:12,}} ><b>{sanitizeHtml(item.content)}  </b></div>   */}
                                                             <div className="col-md " style={{color: "gray",fontSize:12,}} >
                                                             <Editor 
-                                                            apiKey='qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc' 
-                                                            initialValue={item.content}
-                                                            init={{
-                                                            skin: "snow",icons: "thin",
-                                                            height: 300,
-                                                            menubar: false,
-                                                            plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview','anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen','insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'],
-                                                            toolbar:"",
-                                                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                                            //toolbar:"undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent "       //toolbar: 'undo redo | blocks | '+'bold italic forecolor | alignleft aligncenter ' +'alignright alignjustify | bullist numlist outdent indent | ' +'removeformat | help',// onInit={(evt, editor) => editorRef.current = editor}
-                                                            }}
-                                                            disabled={true} value={item.content} />
+                                                                apiKey='qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc' 
+                                                                initialValue={item.content}
+                                                                init={{
+                                                                    skin: "snow",icons: "thin",
+                                                                    height: 300,
+                                                                    menubar: false,
+                                                                    plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview','anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen','insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'],
+                                                                    toolbar:"",
+                                                                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                                                //toolbar:"undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent "       //toolbar: 'undo redo | blocks | '+'bold italic forecolor | alignleft aligncenter ' +'alignright alignjustify | bullist numlist outdent indent | ' +'removeformat | help',// onInit={(evt, editor) => editorRef.current = editor}
+                                                                }}
+                                                                disabled={true} value={item.content} 
+                                                            />
                                                                 </div> 
                                                             
                                                         </div>   

@@ -31,13 +31,8 @@ function EditVdoLesson() {
                
           console.log("xxxLesson ", getHeader, getContent, getSrcUrl)    
       });   
-  
-      
-
-  
+         
       const [uploadFormError, setUploadFormError] = useState<string>('')
-      
-      
       const handleLessonCreate =  async (element: HTMLInputElement) => {    //console.log(element)
         const file = element.files       
         if (file === null )      return 
@@ -52,14 +47,11 @@ function EditVdoLesson() {
  
 
   return  (
-
     <div className="container">  
-
-               
     <form 
       action="http://localhost:8080/api/update-lesson"
-       encType="multipart/form-data"
-       method="Post"
+      encType="multipart/form-data"
+      method="Post"
       > 
       <input type="hidden" name="id" value={id}></input>
       <h6>สร้างบทเนื้อหาบทเรียน</h6>
@@ -86,8 +78,7 @@ function EditVdoLesson() {
           value={getValue}                    
           onEditorChange={ (content: any, editor: any)=>{
               const set_Content = document.getElementById('setContent') as HTMLDivElement | null;              
-              setValue(content);console.log(content);
-              
+              setValue(content);console.log(content);              
             }
           }
         />      
@@ -100,11 +91,9 @@ function EditVdoLesson() {
 
           <div style={{backgroundColor:"gray",width:111, height:111,marginLeft:11,float:"left" }}>
             <JoLPlayer   option={{ videoSrc:getSrcUrl, width: 111,height: 111,}} />      </div>            
-
           <button className="btn btn-lg btn-dark" style={{color:"green",width:155, height:155,marginLeft:200,float:"left" }} type="submit">บันทึก</button>
       </div>
-     </form>
-     
+     </form>     
      
      </div>
    )
