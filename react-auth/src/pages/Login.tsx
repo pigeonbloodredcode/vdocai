@@ -47,7 +47,16 @@ const Login = (props:{setName: (name: string) => void }) =>{
         console.log("login   goPage =",goPage)    
         //return <Navigate  to="/"/>;       
         //window.location.reload();
-        return<><Navigate  to="/"/></> ;
+        // return<><Navigate  to="/"/></> ;
+        return <>
+        <Alert variant="success">
+            <Alert.Heading>ทำการ Login </Alert.Heading>            
+            <img src="uploads/emoji_thai_hi.png" height={88} width={88}></img>
+            <p>ขอบคุณครับ</p>
+
+        </Alert>            
+        {  <meta http-equiv="refresh" content="3;url=/" /> }
+        </>;
     }
     
     return (

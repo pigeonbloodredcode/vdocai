@@ -55,11 +55,11 @@ function ViewLesson()    {
                         <div className="col-md-4" style={{color:"gray"}}></div>
                     </div>
                     <div className="row shadow-lg" >
-                        <div className="col-md-8" style={{ height:500}} >
-                            <div style={{color:"orange",backgroundColor:"#F8F0F0"}}>
+                        <div className="col-md-8" style={{ height:800}} >
+                            <div style={{color:"blackorange",backgroundColor:"white"}}>
                             หัวเรื่อง {getHeader}  
                             </div>
-                            <div style={{color:"red",backgroundColor:"#D5D5D5"}}>
+                            <div style={{color:"black",backgroundColor:"white"}}>
                             เนื้อหา {getContent}
                             </div>                            
                         </div>

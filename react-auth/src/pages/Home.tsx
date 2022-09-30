@@ -4,7 +4,7 @@ import * as Icon from 'react-bootstrap-icons';
 
 const Home = (props:{name: string}) => {   
     //window.location.reload();  
-    const refreshPage = ()=>{setTimeout(location.reload.bind(location), 888);}
+    const refreshPage = ()=>{setTimeout(location.reload.bind(location), 999);}
     
     //onMouseOver={refreshPage} onLoad={refreshPage}
     return (        

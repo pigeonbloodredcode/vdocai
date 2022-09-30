@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import * as Icon from 'react-bootstrap-icons';
 import JoLPlayer from "jol-player";
 import { Editor } from "@tinymce/tinymce-react";
-
+import { title } from "process";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 // type getLessVdo = {
 // 		LessonID :string, 
@@ -16,18 +17,20 @@ import { Editor } from "@tinymce/tinymce-react";
 // };
 /* หา count ทั้งหมด กำหนด limit ใช่loop สร้าง ตัว เริ่มต้น และ สิ้นสุด limit  */
 
-const ViewLessons =  ()=>{
-    //const [getId, setMyId]: [URLSearchParams, Function] = useSearchParams();
-    var { id }= useParams();
-    //const  [lessonvdoList, setLessonVdoList] = useState<string[]>([]);
+const ViewLessons =  ()=>{    
+    var { id }= useParams();    
     const [lessonvdoList, setLessonVdoList] = useState<any[]>([])    
+    //const [getId, setMyId]: [URLSearchParams, Function] = useSearchParams();
+    //const  [lessonvdoList, setLessonVdoList] = useState<string[]>([]);
     //const [lessonvdoList, setLessonVdoList] = useState([]);
+    // const [getId, setId]            = useState([]);
+    // const [getHeader, setHeader]    = useState([]);
+    // const [getContent, setContent]  = useState([]);
+    // const [getUrl, setUrl]          = useState([]);
 
-    const [getId, setId]            = useState([]);
-    const [getHeader, setHeader]    = useState([]);
-    const [getContent, setContent]  = useState([]);
-    const [getUrl, setUrl]          = useState([]);
-    
+    const [isOpenedStar, setIsOpenedStar]= useState(true);
+    const [isOpenedGatherBar, setIsOpenedGatherBar]= useState(true);
+    const [valueHuman, setIvalueHuman]= useState(100);//เราต้องคำนวนจากประชากรผู้ใช้ แล้วมาเฉลี่ย หาค่าเปอร์เซน
 
     useEffect( ()=>{
         const timeout = setTimeout(() => {  }, 2000);//จริงก็ยังไม่ค่อยเข้าใจ timeout ที่ต้องใส่เพราะ เวปโหลดหน้าเป็นพันต่อวิ
@@ -45,6 +48,9 @@ const ViewLessons =  ()=>{
                 console.log(" get Lessonvdo ", lessonvdoList)
             })      
        //}
+
+       setIsOpenedStar(true);
+       setIsOpenedGatherBar(false);
        return () => clearTimeout(timeout);
     },[]);
 
@@ -52,10 +58,40 @@ const ViewLessons =  ()=>{
     console.log("Count Lessonvdo length", lessonvdoList.length);
     console.log("Datas Lessonvdo ", lessonvdoList);
     console.log("Datas Datas", lessonvdoList[0]);
-    const setStarPoint =(e: any)=>{
-            console.log("Even", e);
-    }
 
+    const url = "http://localhost:8080/api/istar-lesson/"+id;    
+    const setStarPoint1 =(e: any)=>{
+        const  responce = fetch( url +"/"+1 , {method:'Put',headers:{'Content-Type': 'application/json'},credentials:'include',})      
+        setIsOpenedStar(false);
+        setIsOpenedGatherBar(true);
+        console.log("Even setStarPoint1", "e", "responce", responce);        
+    }
+    const setStarPoint2 =(e: any)=>{
+        const  responce = fetch( url +"/"+2 , {method:'Put',headers:{'Content-Type': 'application/json'},credentials:'include',})      
+        setIsOpenedStar(false);
+        setIsOpenedGatherBar(true);
+        console.log("Even setStarPoint2", "e", "responce", responce);        
+    }
+    const setStarPoint3 =(e: any)=>{
+        const  responce = fetch( url +"/"+3 , {method:'Put',headers:{'Content-Type': 'application/json'},credentials:'include',})      
+        setIsOpenedStar(false);
+        setIsOpenedGatherBar(true);
+        console.log("Even setStarPoint3", "e", "responce", responce);        
+    }
+    const setStarPoint4 =(e: any)=>{
+        const  responce = fetch( url +"/"+4 , {method:'Put',headers:{'Content-Type': 'application/json'},credentials:'include',})      
+        setIsOpenedStar(false);
+        setIsOpenedGatherBar(true);
+        console.log("Even setStarPoint4", "e", "responce", responce);        
+    }
+    const setStarPoint5 =(e: any)=>{        
+        const  responce = fetch( url +"/"+5 , {method:'Put',headers:{'Content-Type': 'application/json'},credentials:'include',})      
+        setIsOpenedStar(false);
+        setIsOpenedGatherBar(true);
+        console.log("Even setStarPoint5", "e", "responce", responce);        
+    }
+    
+    
 
 return(                
         <div 
@@ -82,7 +118,6 @@ return(
                                         embedG = "https://docs.google.com/forms/d/e/"+item.embed_google+"/viewform?embedded=true"
                                         linkVdo = "http://localhost:3000/uploads/" + item.lesson_id + ".mp4"                                        
                                     return( 
-
                                         <div className="row col-sm-12">
                                             <div className="row col-sm-8" >
                                             <div className="col-sm-8 rounded-top" style={{backgroundColor:"#3B3B3B",color:"whitesmoke"}}>&nbsp;{item.header}</div>                                             
@@ -118,16 +153,23 @@ return(
                                                             
                                                         </div>   
                                                     </div>
-                                                    <div  className="col-sm-6" style={{fontSize:18,color:"black", marginTop:2}}>
-                                                            <span>ให้คะแนน </span>&nbsp;&nbsp;&nbsp;
-                                                            <Icon.StarFill onAuxClick={setStarPoint}
-                                                            name="star1" values="1" style={{"cursor":"pointer"}} title="1 คะแนน"/>
-                                                            <Icon.StarFill name="star2" values="2" style={{cursor:"pointer"}} title="2 คะแนน"/>
-                                                            <Icon.StarFill name="star3" values="3" style={{cursor:"pointer"}} title="3 คะแนน"/>
-                                                            <Icon.StarFill name="star4" values="4" style={{cursor:"pointer"}} title="4 คะแนน"/>
-                                                            <Icon.StarFill name="star5" values="5" style={{cursor:"pointer"}} title="5 คะแนน"/>
-                                                        </div> 
-                                                    <div className="col-md-12 clearfix text-center" style={{paddingTop:0, paddingLeft:5}}>
+                                                    
+                                                    {isOpenedStar && (
+                                                    <div className="AddStar  col-sm-6" style={{fontSize:18,color:"black", marginTop:2}}>
+                                                            <span>ให้คะแนน </span>&nbsp;&nbsp;&nbsp;                                                            
+                                                            <Icon.StarFill onClick={setStarPoint1} name="star1" values="1" style={{"cursor":"pointer"}} title="1 คะแนน"/>
+                                                            <Icon.StarFill onClick={setStarPoint2} name="star2" values = "2" style={{cursor:"pointer"}} title="2 คะแนน"/>
+                                                            <Icon.StarFill onClick={setStarPoint3} name="star3" values="3" style={{cursor:"pointer"}} title="3 คะแนน"/>
+                                                            <Icon.StarFill onClick={setStarPoint4} name="star4" values="4" style={{cursor:"pointer"}} title="4 คะแนน"/>
+                                                            <Icon.StarFill onClick={setStarPoint5} name="star5" values="5" style={{cursor:"pointer"}} title="5 คะแนน"/>
+                                                    </div> 
+                                                    )}
+                                                    {isOpenedGatherBar && (
+                                                            <ProgressBar striped variant="success" animated now={45} />
+                                                    )}
+
+
+                                                    <div className="col-md-12 clearfix text-center" style={{paddingTop:8, paddingLeft:5}}>
                                                         <Link to= {backLesson} className="btn btn-secondary btn-lg float-right fs-6" >ก่อนหน้า</Link> 
                                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                         <Link to= {nextLesson} className="btn btn-secondary btn-lg float-left fs-6" >ต่อไป</Link>
@@ -224,3 +266,5 @@ export default ViewLessons
                     }{JSON.stringify(empList)} */}
 
 {/* <div className="col-md" style={{color: "gray",fontSize:12,}} ><b>{sanitizeHtml(item.content)}  </b></div>                      */}
+
+{/* <Icon.StarFill onAuxClick={setStarPoint1} name="star1" values="1" style={{"cursor":"pointer"}} title="1 คะแนน"/> */}

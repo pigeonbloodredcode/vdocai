@@ -32,14 +32,13 @@ const ReadViewLessons = ()=>{
        //return () => clearTimeout(timeout);
     },[]);
     console.log("LessonvdoListlength", lessonvdoList.length)
-    
 
  return(        
         <>      
                 <div className="container">
                     <div className="row" >
                         <div className="col-md-4"><b>บทเรียนทั่วไป</b></div>                        
-                        <div className="col-md-8"><b>สถานะ</b></div>
+                        <div className="col-md-4"><b>สถานะ</b></div>
                         
                     </div>
                     
@@ -51,7 +50,7 @@ const ReadViewLessons = ()=>{
                                 <div className="row border-top border-gray"  key={index} >                                
                                     <div className="col-md-4">{item.Header.substring(0, 30)}</div>
                                     {/* <div dangerouslySetInnerHTML={{ __html: item.content.substring(0,30) }}></div> */}                                    
-                                    <div className="col-md-8 text-end" style={{color: "red"}} >                                                                            
+                                    <div className="col-md-4 text-end" style={{color: "red"}} >                                                                            
                                         <Link to= {linkUser}    className="btn-dark fs-6" ><Icon.Vimeo />iew</Link>&nbsp; 
                                     </div>
                                 </div>
