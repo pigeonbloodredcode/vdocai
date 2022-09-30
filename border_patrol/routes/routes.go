@@ -28,7 +28,7 @@ func Setup(app *fiber.App) {
 	app.Get("/api/synemployee", controllers.SynEmployee)
 	app.Get("/api/employees", controllers.Employees)
 	app.Get("/api/edit-employee/:id?", controllers.EditEmployee)
-	app.Put("/api/update-employee", controllers.UpdateEmployee)	
+	app.Put("/api/update-employee", controllers.UpdateEmployee)
 	app.Delete("/api/delete-employee/:id?", controllers.DeleteEmployee)
 	app.Get("/api/admin-employee/:id?/:set?", controllers.AdminEmployee)
 	app.Get("/api/lock-employee/:id?/:set?", controllers.LockEmployee)
@@ -36,10 +36,12 @@ func Setup(app *fiber.App) {
 	///Lesson
 	app.Get(("/api/lessons"), controllers.Lesson)
 	app.Get(("/api/view-lesson/:id?"), controllers.ViewLesson)
-	app.Post(("/api/create-lesson"), controllers.CreateLesson)	
-	app.Get(("/api/edit-lesson/:id?"), controllers.EditLesson)	
-	app.Post(("/api/update-lesson"), controllers.UpdateLesson)	
+	app.Post(("/api/create-lesson"), controllers.CreateLesson)
+	app.Get(("/api/edit-lesson/:id?"), controllers.EditLesson)
+	app.Post(("/api/update-lesson"), controllers.UpdateLesson)
 	app.Delete(("/api/delete-lesson/:id?"), controllers.DeleteLesson)
 
 	app.Get(("/api/view-lessons/:id?"), controllers.SynLessons)
+
+	app.Put(("/api/istar-lesson/:id?/:num?"), controllers.IStarLesson)
 }

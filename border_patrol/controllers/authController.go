@@ -5,22 +5,22 @@ import (
 	"border_patrol/models"
 	"bufio"
 	"io"
+	"log"
+	"os"
+	"strings"
 
-	//"bytes"
 	"fmt"
-	_ "io"
+
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 
-	//"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
-
-	//dJson := `{"some":"json"}`		//json.Unmarshal([]byte(dJson), &myStoredVariable)
 	_ "encoding/json"
-	"os"
+
+	"golang.org/x/crypto/bcrypt"
+	//dJson := `{"some":"json"}`		//json.Unmarshal([]byte(dJson), &myStoredVariable)
 )
 
 const SecretKey = "secret"
@@ -33,7 +33,7 @@ func init() {
 
 }
 
-/// syn and check jwt cookie found decode is ID and syn DB found  return empolyee data jason
+// / syn and check jwt cookie found decode is ID and syn DB found  return empolyee data jason
 func SynEmployee(c *fiber.Ctx) error {
 	// pass := SynCookie(c)
 	// if( pass != "admin" || pass == "viewer" ){
@@ -80,24 +80,24 @@ func SynEmployee(c *fiber.Ctx) error {
 	}
 	if ear.EmployeeID == "" {
 		return c.JSON(fiber.Map{"message": " not found user"})
+	} else {
+		fmt.Println("ear.EmployeeID 0 Err=", err)
 	}
 
 	return c.JSON(ear) //return c.JSON(employee)
 }
 
-//var DB *gorm.DB
+// var DB *gorm.DB
 func Register(c *fiber.Ctx) error {
-
 	if Level != "" {
-
 	}
-	var data map[string]string
 
+	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
-	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 8)
 
+	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 8)
 	emp := models.Employee{
 		Name:     data["name"],
 		Email:    data["email"],
@@ -106,18 +106,16 @@ func Register(c *fiber.Ctx) error {
 		Status:   true,
 		Admin: []models.Admin{
 			{
-
 				Name:   "viewer",
 				RoleID: 2,
 			},
 		},
 	}
 	database.DB.Create(&emp)
-
 	return c.JSON(emp)
 }
 
-///// if Process responce message ( login:employeeJSON  or unlogin )
+// /// if Process responce message ( login:employeeJSON  or unlogin )
 func Login(c *fiber.Ctx) error {
 	var data map[string]string
 
@@ -132,7 +130,7 @@ func Login(c *fiber.Ctx) error {
 
 	if err := bcrypt.CompareHashAndPassword(emp.Password, []byte(data["password"])); err != nil {
 		fmt.Println("bcrypt ", err.Error())
-		c.Status(fiber.StatusBadRequest)
+		//c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
 			"message": "unlogin",
 		})
@@ -161,20 +159,28 @@ func Login(c *fiber.Ctx) error {
 	}
 	c.Cookie(&cookie)
 
-	//fmt.Println(emp.Email)
-	if emp.EmployeeID == 0 || emp.Email == "" {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(fiber.Map{
-			//"message": "user not found",
+	fmt.Println(emp.Email, emp.EmployeeID)
+	if emp.EmployeeID == 0 || emp.Email == "" { //c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{ //"message": "user not found",
 			"message": "unlogin",
 		})
 	} else {
-
 		return c.JSON(fiber.Map{
 			"message": "login",
 		})
 	}
+}
+func Logout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+	c.Cookie(&cookie)
+	fmt.Println("Logout  see you soon")
 
+	return c.JSON(fiber.Map{"message": "logout"})
 }
 
 func Employees(c *fiber.Ctx) error {
@@ -285,17 +291,19 @@ func AdminEmployee(c *fiber.Ctx) error {
 
 	var empAdmin models.Admin
 	//set  viewer and admin
-	if set == "toadmin" {
+	if set == "toadmin" { //fmt.Println("ViewerEmployee", id, ", emp ", empAdmin.RoleID) //empAdmin.Name = "viewer";empAdmin.RoleID = 2;database.DB.Save(&empAdmin);
 		database.DB.Model(&empAdmin).Where("admin_id = ?", id).Update("role_id", 1).Update("name", "admin")
-		//fmt.Println("ViewerEmployee", id, ", emp ", empAdmin.RoleID) //empAdmin.Name = "viewer";empAdmin.RoleID = 2;database.DB.Save(&empAdmin);
-
-	} else if set == "toviewer" {
+		fmt.Println("message", "toadmin")
+		return c.JSON(fiber.Map{"message": "toadmin"})
+	} else if set == "toviewer" { //fmt.Println("AdminEmployee", id, ", emp ", empAdmin.RoleID)//empAdmin.Name = "admin";empAdmin.RoleID = 1;database.DB.Save(&empAdmin);
 		database.DB.Model(&empAdmin).Where("admin_id = ?", id).Update("role_id", 2).Update("name", "viewer")
-		//fmt.Println("AdminEmployee", id, ", emp ", empAdmin.RoleID)//empAdmin.Name = "admin";empAdmin.RoleID = 1;database.DB.Save(&empAdmin);
+		fmt.Println("message", "toviewer")
+		return c.JSON(fiber.Map{"message": "toviewer"})
 
 	}
 
-	return c.Status(200).JSON("")
+	return c.JSON(fiber.Map{"message": " not found user"})
+
 }
 func LockEmployee(c *fiber.Ctx) error {
 	if c.Params("id") == "" || c.Params("set") == "" {
@@ -314,71 +322,36 @@ func LockEmployee(c *fiber.Ctx) error {
 		database.DB.Model(&emp).Where("employee_id = ?", id).Update("status", 1)
 
 	}
-
-	return c.Status(200).JSON("")
+	//return c.JSON(emp)
+	return c.Status(200).JSON("LockEmployee_true")
+	//return c.JSON(fiber.Map{"message": "LockEmployee_true"})
 }
 
-func Logout(c *fiber.Ctx) error {
-	cookie := fiber.Cookie{
-		Name:     "jwt",
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
-		HTTPOnly: true,
-	}
-	c.Cookie(&cookie)
-	fmt.Println("Logout  see you soon")
-	return c.JSON(fiber.Map{
-		"message": "unlogin",
-	})
-}
 func SynLessons(c *fiber.Ctx) error {
 	fmt.Println("SynLessons")
 	type LESSON struct {
-		Lesson_id 			string `json:"lesson_id"`
-		Header    			string `json:"header"`
-		Content   			string `json:"content"`
-		Status    			string `json:"status"`
-		Src_dir   			string `json:"src_dir"`
-		Embed_google    	string `json:"embed_google"`
+		Lesson_id    string `json:"lesson_id"`
+		Header       string `json:"header"`
+		Content      string `json:"content"`
+		Status       string `json:"status"`
+		Src_dir      string `json:"src_dir"`
+		Embed_google string `json:"embed_google"`
 	}
-	var lesson []LESSON;
+	var lesson []LESSON
 	//var lesson []models.Lesson
 	id := c.Params("id")
 	fmt.Println(id, "Lesson")
 	database.DB.Select(
 		"lessons.lesson_id as lesson_id , lessons.header as header, lessons.content as content , lessons.status as status, " +
-		"vdos.src_dir as src_dir, lesson_questions.embed_google as embed_google").
+									"vdos.src_dir as src_dir, lesson_questions.embed_google as embed_google").
 		Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id"). //Find(&lesson)
 		Joins("JOIN lesson_questions on  lesson_questions.lesson_id = lessons.lesson_id").Find(&lesson)
 	return c.JSON(lesson)
-
-	// type LESSONVDOQUESTION struct {
-	// 	Lesson_id 			string `json:"lesson_id"`
-	// 	Header    			string `json:"header"`
-	// 	Content   			string `json:"content"`
-	// 	Src_dir   			string `json:"src_dir"`
-	// 	Status    			string `json:"status"`
-	// 	Embed_google    	string `json:"embed_google"`
-	// }
-	// var lvq []LESSONVDOQUESTION
-	// rows, err := database.DB.Table("lessons").
-	// Select("*").
-	// Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").
-	// Joins("JOIN lesson_questions on  lesson_questions.lesson_id = lessons.lesson_ids").Rows()
-	// if err != nil {fmt.Println("Err:", err);}
-	//  for rows.Next() {
-	// 	rows.Scan(lvq)
-	// 	rows.Scan(&lvq.Lesson_id, &lvq.Header, &lvq.Content, &lvq.Status, &lvq.Embed_google, &lvq.Src_dir);
-	// 	fmt.Println( lvq.Lesson_id,  lvq.Header,  lvq.Content,  lvq.Status,  lvq.Embed_google,  lvq.Src_dir);
-	//  }
-	// return c.JSON(rows);
-
 }
 func Lesson(c *fiber.Ctx) error {
 	var lesson []models.Lesson
 	database.DB.Select("*").Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").Find(&lesson)
 	fmt.Println(lesson)
-
 	return c.JSON(lesson) //return c.JSON(employee)
 }
 
@@ -399,22 +372,21 @@ func ViewLesson(c *fiber.Ctx) error {
 		Director  string `json:"director"`
 	}
 
-	var lv LESSONVDO;
+	var lv LESSONVDO
 	//rows, err := database.DB.Table("lessons").Select("lessons.lesson_id as lesson_id, lessons.header as header, "+"lessons.content as content, 	 lessons.status as status, "+"vdos.title as title, 			 vdos.src_dir   as src_dir,"+"vdos.director  as director, lesson_questions.embed_google as embed_google ").Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").Joins("JOIN lesson_questions on  lesson_questions.lesson_id = lessons.lesson_id").Where("lessons.lesson_id", id).Rows()//if err := rows.Err(); err != nil {panic(err);}
-	var l models.Lesson;
+	var l models.Lesson
 	database.DB.Model(&l).
-	Select("lessons.lesson_id as lesson_id, lessons.header as header, "+
-	"lessons.content as content, 	 lessons.status as status, "+
-	"vdos.title as title, 			 vdos.src_dir   as src_dir,"+
-	"vdos.director  as director, lesson_questions.embed_google as embed_google ").
-	Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").
-	Joins("JOIN lesson_questions ON  lesson_questions.lesson_id = lessons.lesson_id").
-	Where("lessons.lesson_id", id).Scan(&lv)
+		Select("lessons.lesson_id as lesson_id, lessons.header as header, "+
+			"lessons.content as content, 	 lessons.status as status, "+
+			"vdos.title as title, 			 vdos.src_dir   as src_dir,"+
+			"vdos.director  as director, lesson_questions.embed_google as embed_google ").
+		Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").
+		Joins("JOIN lesson_questions ON  lesson_questions.lesson_id = lessons.lesson_id").
+		Where("lessons.lesson_id", id).Scan(&lv)
 
-
-
-	
-	if lv.Lesson_id == "" {		return c.JSON(fiber.Map{"message": " not found user"});	}
+	if lv.Lesson_id == "" {
+		return c.JSON(fiber.Map{"message": " not found user"})
+	}
 	return c.JSON(lv)
 }
 
@@ -469,10 +441,8 @@ func CreateLesson(c *fiber.Ctx) error {
 	database.DB.Create(&lq)
 
 	//1FAIpQLSezra08VMfz8VzFhfsVdZKSH5i2E6cV9fD4VdV95jCWE5aV2A  EMBED GOOGLE
-	c.Redirect("http://localhost:3000/create-vdo-lesson")
-	return c.JSON((fiber.Map{
-		"message": "createVDOLesson",
-	}))
+	c.Redirect("http://localhost:3000/add-lesson")
+	return c.JSON((fiber.Map{"message": "addVDOLesson"}))
 }
 
 func EditLesson(c *fiber.Ctx) error {
@@ -535,6 +505,7 @@ func UpdateLesson(c *fiber.Ctx) error {
 	fileFormFile, errFormFile := c.FormFile("formData")
 	if errFormFile != nil {
 		fmt.Println("file upload error -->", errFormFile.Error(), "-->", fileFormFile)
+		c.Redirect("http://localhost:3000/update-lesson")
 		return c.JSON(fiber.Map{"status": 500, "message": "server upload file"})
 	}
 	saveDir := fmt.Sprintf("/home/redcode/Desktop/src/vdocai/react-auth/public/uploads/%s.mp4", getId)
@@ -550,7 +521,10 @@ func UpdateLesson(c *fiber.Ctx) error {
 		fmt.Println("Err ", err)
 	}
 
-	return c.JSON("updatelesson")
+	//return c.JSON("updatelesson")
+
+	c.Redirect("http://localhost:3000/update-lesson")
+	return c.JSON((fiber.Map{"message": "UpdateVDOLesson"}))
 }
 
 func DeleteLesson(c *fiber.Ctx) error {
@@ -600,21 +574,97 @@ func DeleteLesson(c *fiber.Ctx) error {
 	///ลบไฟล์ วิดีโอด้วย	fmt.Println("DELETE vdo lesson by id", id) //database.DB.Model(&employee).Association("Admin").Delete(&admin)
 
 	return c.JSON(fiber.Map{"message": "undeletelesson"})
-
 }
 
-func ReadByWord(filename string) {
-	file, err := os.Open(filename)
+// create file input  and Add varible start to file name lession_id
+func IStarLesson(c *fiber.Ctx) error {
+	if c.Params("id") == "" || c.Params("num") == "" {
+		return c.JSON(fiber.Map{"message": "INPUT NULL Star"})
+	}
+	var id = c.Params("id")
+
+	num, err := strconv.Atoi(c.Params("num"))
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err)
 	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
+
+	/////fi open input file and close  on exit and check for its returned error 	/* Real Pathfi, err := os.Open("/home/redcode/Desktop/src/vdocai/border_patrol/uploads/input.txt",os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)*/
+	fi, err := os.OpenFile("uploads/"+id+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("os.OpenFile", err)
+	}
+	defer func() {
+		if err := fi.Close(); err != nil {
+			fmt.Println("fi.Close", err)
+		}
+	}()
+	/////fi open input file and close
+
+	/////f open read write close
+	f, err := os.Open("uploads/" + id + ".txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanWords)
+	count := 0
+	var s []string
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		s = append(s, scanner.Text())
+		count++
 	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d\n", count)
+	addValue, err := strconv.Atoi(strings.Join(s, ""))
+	addValue = addValue + num
+	fmt.Println(" infile", addValue, " <<  ", num)
+
+	/// write
+	ff, err := os.OpenFile("uploads/"+id+".txt", os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("os.OpenFile", err)
+	}
+	defer func() {
+		if err := ff.Close(); err != nil {
+			fmt.Println("fi.Close", err)
+		}
+	}()
+
+	_, err2 := ff.WriteString(strconv.Itoa(addValue))
+	if err2 != nil {
+		log.Fatal(err2.Error())
+		fmt.Println(err2)
+	}
+	fmt.Println(" เพิ่มดาว เสร็จ")
+
+	return c.JSON(fiber.Map{"message": "Add Star"})
 }
+
+func ReadByWord(c *fiber.Ctx) error {
+	/////f open read write close
+	f, err := os.Open("uploads/" + "id" + ".txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	scanner.Split(bufio.ScanWords)
+	count := 0
+	var s []string
+	for scanner.Scan() {
+		s = append(s, scanner.Text())
+		count++
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d\n", count)
+	return c.JSON(fiber.Map{"message": "Read Star"})
+}
+
 func ReadByByte(filename string, size uint8) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -634,7 +684,26 @@ func ReadByByte(filename string, size uint8) {
 	}
 }
 
-
+// type LESSONVDOQUESTION struct {
+// 	Lesson_id 			string `json:"lesson_id"`
+// 	Header    			string `json:"header"`
+// 	Content   			string `json:"content"`
+// 	Src_dir   			string `json:"src_dir"`
+// 	Status    			string `json:"status"`
+// 	Embed_google    	string `json:"embed_google"`
+// }
+// var lvq []LESSONVDOQUESTION
+// rows, err := database.DB.Table("lessons").
+// Select("*").
+// Joins("JOIN vdos on  vdos.vdo_id = lessons.lesson_id").
+// Joins("JOIN lesson_questions on  lesson_questions.lesson_id = lessons.lesson_ids").Rows()
+// if err != nil {fmt.Println("Err:", err);}
+//  for rows.Next() {
+// 	rows.Scan(lvq)
+// 	rows.Scan(&lvq.Lesson_id, &lvq.Header, &lvq.Content, &lvq.Status, &lvq.Embed_google, &lvq.Src_dir);
+// 	fmt.Println( lvq.Lesson_id,  lvq.Header,  lvq.Content,  lvq.Status,  lvq.Embed_google,  lvq.Src_dir);
+//  }
+// return c.JSON(rows);
 
 // func main() {
 //     db, err := sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
@@ -912,3 +981,30 @@ func ReadByByte(filename string, size uint8) {
 
 // database.DB.Joins("lessons").
 //database.DB.Select("lessons.lesson_id, lessons.header, lessons.content,  vdos.title, vdos.src_dir, vdos.director, vdos.status ").
+// open output file
+// fo, err := os.Create("uploads/output.txt")
+// if err != nil {
+// 	fmt.Println("os.Create ", err)
+// }
+// // close fo on exit and check for its returned error
+// if err := fo.Close(); err != nil {
+// 	fmt.Println(err)
+// }
+// //}()
+// // make a buffer to keep chunks  that are read
+// buf := make([]byte, 1024)
+// for {
+// 	//read a chunk
+// 	n, err := fi.Read(buf)
+// 	if err != nil && err != io.EOF {
+// 		fmt.Println("if err != nil && err != io.EOF {", err)
+// 	}
+// 	if n == 0 {
+// 		break
+// 	}
+
+// 	//write a chunk
+// 	if _, err := fo.Write(buf[:n]); err != nil {
+// 		fmt.Println("if _, err := fo.Write(buf[:n]); err != nil {", err)
+// 	}
+// }
